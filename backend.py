@@ -1,3 +1,4 @@
+import os
 import torch
 import faiss
 import json
@@ -9,28 +10,23 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model_512 = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
 processor_512 = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY",""))
+client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
 
 index_top = faiss.read_index("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/top_db.index")
 index_bottom = faiss.read_index("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/bottom_db.index")
 index_dress = faiss.read_index("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/dress_db.index")
-index_outer = faiss.read_index("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/outer_db.index")
 
 with open("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/top_paths.json") as f:
-    top_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색", 
-                           "/content/drive/MyDrive/공유드라이브/패션시멘틱검색") 
+    top_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색",
+                           "/content/drive/MyDrive/공유드라이브/패션시멘틱검색")
                  for p in json.load(f)]
 with open("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/bottom_paths.json") as f:
-    bottom_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색", 
-                              "/content/drive/MyDrive/공유드라이브/패션시멘틱검색") 
+    bottom_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색",
+                              "/content/drive/MyDrive/공유드라이브/패션시멘틱검색")
                     for p in json.load(f)]
 with open("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/dress_paths.json") as f:
-    dress_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색", 
-                             "/content/drive/MyDrive/공유드라이브/패션시멘틱검색") 
-                   for p in json.load(f)]
-with open("/content/drive/MyDrive/공유드라이브/패션시멘틱검색/옷/faiss/outer_paths.json") as f:
-    outer_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색", 
-                             "/content/drive/MyDrive/공유드라이브/패션시멘틱검색") 
+    dress_paths = [p.replace("/content/drive/MyDrive/패션시멘틱검색",
+                             "/content/drive/MyDrive/공유드라이브/패션시멘틱검색")
                    for p in json.load(f)]
 
 def extract_fashion_keywords(query):
